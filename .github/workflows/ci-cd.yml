@@ -21,11 +21,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Check System Info
+        run: |
+          uname -a
+          arch
+          python --version
+
       # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11.5'
+          architecture: 'arm64'
 
       # Install dependencies
       - name: Install Dependencies
