@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: github-webhook-pull-request
+  namespace: myapps
+  labels:
+    app: github-webhook-pull-request
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: github-webhook-pull-request
+  template:
+    metadata:
+      labels:
+        app: github-webhook-pull-request
+    spec:
+      containers:
+      - name: github-webhook-pull-request
+        image: wintersalmon/github-webhook-pull-request:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 30
+        env:
+        - name: GITHUB_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: github-webhook-secret
+              key: GITHUB_SECRET
+      imagePullSecrets:
+        - name: regcred

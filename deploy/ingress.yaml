@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wintersalmon-ingress
+  namespace: myapps
+spec:
+  rules:
+  - host: api.wintersalmon.com
+    http:
+      paths:
+      - path: /hooks/github/pull-request
+        pathType: Prefix
+        backend:
+          service:
+            name: github-webhook-pull-request
+            port:
+              number: 5000
