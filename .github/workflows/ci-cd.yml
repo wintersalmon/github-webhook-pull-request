@@ -20,45 +20,31 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # - name: Check System Info
-      #   run: |
-      #     uname -a
-      #     arch
-      #     python --version
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
 
-      # # Print AGENT_TOOLSDIRECTORY
-      # - name: Print AGENT_TOOLSDIRECTORY
-      #   run: |
-      #     echo "AGENT_TOOLSDIRECTORY: $AGENT_TOOLSDIRECTORY"
-      #     ls -la $AGENT_TOOLSDIRECTORY
-
-      # # Set up Python
-      # - name: Set up Python 3.x
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: 3.11.2
-      #     architecture: 'arm64'
-
-      # # Install dependencies
-      - name: Install Dependencies
+      - name: Install poetry
         run: |
-          python -m pip install --upgrade pip
-          pip install -r src/requirements.txt
+          python -m pip install poetry==1.1.11
 
-      # Install Dependencies with Poetry
-      # - name: Install Dependencies with Poetry
-      #   run: |
-      #     poetry install
-
-      # # 8. Optional: Run Tests
-      # - name: Run Tests
-      #   run: |
-      #     poetry run pytest
-
-      # Run Tests
-      - name: Run Tests
+      - name: Configure poetry
         run: |
-          pytest tests/
+          python -m poetry config virtualenvs.in-project true
+
+      - name: Cache the virtualenv
+        uses: actions/cache@v2
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        run: |
+          python -m poetry install
+
+      - name: Run tests
+        run: |
+          python -m poetry run python -m pytest -sxv
 
       # Log in to Docker Hub
       - name: Log in to Docker Hub
