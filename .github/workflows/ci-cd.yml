@@ -11,12 +11,11 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: wintersalmon/github-webhook-pull-request
+  AGENT_TOOLSDIRECTORY: /home/wintersalmon/actions-runner/_work/_tool
 
 jobs:
   build:
     runs-on: self-hosted  # Specifies the self-hosted runner
-    env:
-      AGENT_TOOLSDIRECTORY: /home/wintersalmon/actions-runner/_work/_tool
     steps:
       # Checkout the repository
       - name: Checkout Code
