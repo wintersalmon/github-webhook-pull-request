@@ -11,7 +11,6 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: wintersalmon/github-webhook-pull-request
-  AGENT_TOOLSDIRECTORY: /home/wintersalmon/actions-runner/_work/
 
 jobs:
   build:
@@ -26,6 +25,12 @@ jobs:
           uname -a
           arch
           python --version
+
+      # Print AGENT_TOOLSDIRECTORY
+      - name: Print AGENT_TOOLSDIRECTORY
+        run: |
+          echo "AGENT_TOOLSDIRECTORY: $AGENT_TOOLSDIRECTORY"
+          ls -la $AGENT_TOOLSDIRECTORY
 
       # Set up Python
       - name: Set up Python 3.x
@@ -44,12 +49,6 @@ jobs:
       - name: Run Tests
         run: |
           pytest tests/
-
-      # Print AGENT_TOOLSDIRECTORY
-      - name: Print AGENT_TOOLSDIRECTORY
-        run: |
-          echo "AGENT_TOOLSDIRECTORY: $AGENT_TOOLSDIRECTORY"
-          ls -la $AGENT_TOOLSDIRECTORY
 
       # Log in to Docker Hub
       - name: Log in to Docker Hub
