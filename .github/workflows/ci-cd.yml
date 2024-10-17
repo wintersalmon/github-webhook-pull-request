@@ -48,21 +48,23 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Deploy to k3s
+      - name: Deploy to k3s > Decode the kubeconfig and save it to a file
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
-          # Decode the kubeconfig and save it to a file
           echo "$KUBECONFIG_CONTENT" | base64 --decode > ~/.kube/config
 
-          # Update the image in deployment.yaml with the new image tag
+      - name: Deploy to k3s > Update the image in deployment.yaml with the new image tag
+        run: |
           sed -i "s|your-dockerhub-username/github-webhook-pull-request:latest|${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}|g" deploy/deployment.yaml
-          
-          # Apply Kubernetes manifests
+
+      - name: Deploy to k3s > Apply Kubernetes manifests
+        run: |
           kubectl apply -f deploy/namespace.yaml
           kubectl apply -f deploy/deployment.yaml
           kubectl apply -f deploy/service.yaml
           kubectl apply -f deploy/ingress.yaml
 
-          # Optional: Wait for rollout to complete
+      - name: Deploy to k3s > Optional Wait for rollout to complete
+        run: |
           kubectl rollout status deployment/github-webhook-pull-request -n myapps
