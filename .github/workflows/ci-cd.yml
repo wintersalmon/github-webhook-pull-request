@@ -52,7 +52,7 @@ jobs:
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
-          echo "$KUBECONFIG_CONTENT" | base64 --decode > ~/.kube/config
+          echo "$KUBECONFIG" | base64 --decode > ~/.kube/config
           cat ~/.kube/config
 
       - name: Deploy to k3s > Update the image in deployment.yaml with the new image tag
